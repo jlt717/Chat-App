@@ -6,6 +6,8 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 
 const backgroundColors = {
@@ -90,6 +92,9 @@ const Start = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Start Chatting</Text>
           </TouchableOpacity>
+          {Platform.OS === "android" ? (
+            <KeyboardAvoidingView behavior="height" />
+          ) : null}
         </View>
       </ImageBackground>
     </View>
@@ -107,6 +112,7 @@ const styles = StyleSheet.create({
     padding: "5%",
   },
   appTitle: {
+    fontFamily: "Poppins-Regular",
     flex: 2,
     textAlign: "center",
     fontSize: 45,
@@ -121,6 +127,7 @@ const styles = StyleSheet.create({
     flexBasis: 150,
   },
   textInput: {
+    fontFamily: "Poppins-Regular",
     textAlign: "center",
     fontSize: 16,
     width: "88%",
@@ -157,6 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#757083",
   },
   buttonText: {
+    fontFamily: "Poppins-Regular",
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
