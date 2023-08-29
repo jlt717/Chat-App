@@ -17,7 +17,7 @@ const Chat = ({ route, navigation }) => {
     setMessages([
       {
         _id: 1,
-        text: "Hello developer",
+        text: "Have a wonderful day!",
         createdAt: new Date(),
         user: {
           _id: 2,
@@ -27,9 +27,9 @@ const Chat = ({ route, navigation }) => {
       },
       {
         _id: 2,
-        text: "This is a system message",
+        text: "You have entered the chat.",
         createdAt: new Date(),
-        system: true,
+        system: true, //creates a system message
       },
     ]);
   }, []);
@@ -42,6 +42,7 @@ const Chat = ({ route, navigation }) => {
 
   const renderBubble = (props) => {
     return (
+      //color of text bubbles in chat
       <Bubble
         {...props}
         wrapperStyle={{
@@ -57,7 +58,6 @@ const Chat = ({ route, navigation }) => {
   };
   return (
     <View style={[styles.container, { backgroundColor: backgroundColor }]}>
-      {/* <Text style={styles.text}>Let's chat!</Text> */}
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
@@ -66,8 +66,13 @@ const Chat = ({ route, navigation }) => {
           _id: 1,
         }}
       />
+      {/* prevents keyboard from blocking view android */}
       {Platform.OS === "android" ? (
         <KeyboardAvoidingView behavior="height" />
+      ) : null}
+      {/* prevents keyboard from blocking view ios */}
+      {Platform.OS === "ios" ? (
+        <KeyboardAvoidingView behavior="padding" />
       ) : null}
     </View>
   );

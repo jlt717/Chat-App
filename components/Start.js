@@ -38,7 +38,7 @@ const Start = ({ navigation }) => {
             style={styles.textInput}
             value={name}
             onChangeText={setName}
-            placeholder="Type your username here"
+            placeholder="     Type your username here"
           />
           <Text
             style={{
@@ -55,6 +55,7 @@ const Start = ({ navigation }) => {
           </Text>
           <View style={styles.colorSelector}>
             <TouchableOpacity
+              //when a color is selected and clicked on it will be set as background color
               style={[
                 styles.colorChoice,
                 color === backgroundColors.almostBlack && styles.selectedCircle,
@@ -99,8 +100,13 @@ const Start = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Start Chatting</Text>
           </TouchableOpacity>
+          {/* prevents keyboard from blocking view android */}
           {Platform.OS === "android" ? (
             <KeyboardAvoidingView behavior="height" />
+          ) : null}
+          {/* prevents keyboard from blocking view ios */}
+          {Platform.OS === "ios" ? (
+            <KeyboardAvoidingView behavior="padding" />
           ) : null}
         </View>
       </ImageBackground>
@@ -149,12 +155,14 @@ const styles = StyleSheet.create({
   colorChoice: {
     height: 50,
     width: 50,
+    //border radius of half the width fof an element will make a circle
     borderRadius: 25,
     marginTop: 10,
     marginBottom: 10,
   },
   colorSelector: {
     flex: 1,
+    //provides spacing between color circles
     justifyContent: "space-around",
     flexDirection: "row",
   },
@@ -166,7 +174,9 @@ const styles = StyleSheet.create({
     width: "88%",
     marginTop: 20,
     padding: 15,
+    //aligns button itself
     alignSelf: "center",
+    //aligns text inside button
     alignItems: "center",
     color: "#FFFFFF",
     backgroundColor: "#757083",
@@ -181,12 +191,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#ABABAB",
     position: "absolute",
     top: 53,
-    left: 50,
+    left: 56,
     zIndex: 1, // makes icon appear above textInput
   },
   icon: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
   },
 });
 
