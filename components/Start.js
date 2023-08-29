@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   StyleSheet,
+  Image,
   View,
   Text,
   TextInput,
@@ -30,6 +31,9 @@ const Start = ({ navigation }) => {
       >
         <Text style={styles.appTitle}>Chatterbox</Text>
         <View style={styles.inputBox}>
+          <View style={styles.iconContainer}>
+            <Image source={require("../assets/icon.png")} style={styles.icon} />
+          </View>
           <TextInput
             style={styles.textInput}
             value={name}
@@ -39,10 +43,12 @@ const Start = ({ navigation }) => {
           <Text
             style={{
               textAlign: "left",
+              fontFamily: "Poppins-Regular",
               color: "#000000",
               fontSize: 16,
               fontWeight: "300",
               paddingTop: 15,
+              marginLeft: 20,
             }}
           >
             Choose Background Color:
@@ -81,6 +87,7 @@ const Start = ({ navigation }) => {
               onPress={() => setColor(backgroundColors.green)}
             ></TouchableOpacity>
           </View>
+          <View></View>
           <TouchableOpacity
             style={styles.button}
             onPress={() =>
@@ -127,6 +134,7 @@ const styles = StyleSheet.create({
     flexBasis: 150,
   },
   textInput: {
+    backgroundColor: "#FFFFFF",
     fontFamily: "Poppins-Regular",
     textAlign: "center",
     fontSize: 16,
@@ -168,6 +176,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
+  },
+  iconContainer: {
+    backgroundColor: "#ABABAB",
+    position: "absolute",
+    top: 53,
+    left: 50,
+    zIndex: 1, // makes icon appear above textInput
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });
 

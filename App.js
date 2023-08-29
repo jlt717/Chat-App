@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 // import the screens we want to navigate
-import React, { useCallback } from "react";
+import React, { useEffect } from "react";
 import Start from "./components/Start";
 import Chat from "./components/Chat";
 import { NavigationContainer } from "@react-navigation/native";
@@ -15,16 +15,29 @@ const App = () => {
   const [fontsLoaded] = useFonts({
     "Poppins-Regular": require("./assets/Poppins-Regular.ttf"),
   });
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
+  useEffect(() => {
+    const hideSplashScreen = async () => {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    };
+
+    hideSplashScreen();
   }, [fontsLoaded]);
+
   if (!fontsLoaded) {
     return null;
   }
+  //const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
   return (
-    <NavigationContainer onLayout={onLayoutRootView}>
+    <NavigationContainer>
       <Stack.Navigator initialRouteName="Start">
         <Stack.Screen name="Start" component={Start} />
         <Stack.Screen name="Chat" component={Chat} />
