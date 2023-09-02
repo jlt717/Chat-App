@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
   Platform,
   KeyboardAvoidingView,
+  Alert,
 } from "react-native";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const backgroundColors = {
   darkGray: "#474056",
@@ -19,98 +21,127 @@ const backgroundColors = {
 };
 
 const Start = ({ navigation }) => {
+  const auth = getAuth();
   const [name, setName] = useState("");
   const [color, setColor] = useState(backgroundColors.darkGray);
 
+  const signInUser = () => {
+    signInAnonymously(auth)
+      .then((result) => {
+        navigation.navigate("Chat", {
+          userID: result.user.uid,
+          name,
+          backgroundColor: color,
+        });
+        Alert.alert("Signed in Successfully!");
+      })
+      .catch((error) => {
+        console.error("Error signing in:", error);
+        Alert.alert("Unable to sign in, try again later.");
+      });
+  };
+
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../assets/background-image.png")}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        <Text style={styles.appTitle}>Chatterbox</Text>
-        <View style={styles.inputBox}>
-          <View style={styles.iconContainer}>
-            <Image source={require("../assets/icon.png")} style={styles.icon} />
-          </View>
-          <TextInput
-            style={styles.textInput}
-            value={name}
-            onChangeText={setName}
-            placeholder="     Type your username here"
-          />
-          <Text
-            style={{
-              textAlign: "left",
-              fontFamily: "Poppins-Regular",
-              color: "#000000",
-              fontSize: 16,
-              fontWeight: "300",
-              paddingTop: 15,
-              marginLeft: 20,
-            }}
-          >
-            Choose Background Color:
-          </Text>
-          <View style={styles.colorSelector}>
+    //prevents keyboard from blocking view
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../assets/background-image.png")}
+          resizeMode="cover"
+          style={styles.image}
+        >
+          <Text style={styles.appTitle}>Chatterbox</Text>
+          <View style={styles.inputBox}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require("../assets/icon.png")}
+                style={styles.icon}
+              />
+            </View>
+            <TextInput
+              style={styles.textInput}
+              value={name}
+              onChangeText={setName}
+              placeholder="     Type your username here"
+            />
+            <Text
+              style={{
+                textAlign: "left",
+                fontFamily: "Poppins-Regular",
+                color: "#000000",
+                fontSize: 16,
+                fontWeight: "300",
+                paddingTop: 15,
+                marginLeft: 20,
+              }}
+            >
+              Choose Background Color:
+            </Text>
+            <View style={styles.colorSelector}>
+              <TouchableOpacity
+                //when a color is selected and clicked on it will be set as background color
+                style={[
+                  styles.colorChoice,
+                  color === backgroundColors.almostBlack &&
+                    styles.selectedCircle,
+                  { backgroundColor: backgroundColors.almostBlack },
+                ]}
+                onPress={() => setColor(backgroundColors.almostBlack)}
+              ></TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.colorChoice,
+                  color === backgroundColors.darkGray && styles.selectedCircle,
+                  { backgroundColor: backgroundColors.darkGray },
+                ]}
+                onPress={() => setColor(backgroundColors.darkGray)}
+              ></TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.colorChoice,
+                  color === backgroundColors.blueGray && styles.selectedCircle,
+                  { backgroundColor: backgroundColors.blueGray },
+                ]}
+                onPress={() => setColor(backgroundColors.blueGray)}
+              ></TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.colorChoice,
+                  color === backgroundColors.green && styles.selectedCircle,
+                  { backgroundColor: backgroundColors.green },
+                ]}
+                onPress={() => setColor(backgroundColors.green)}
+              ></TouchableOpacity>
+            </View>
+            <View></View>
             <TouchableOpacity
-              //when a color is selected and clicked on it will be set as background color
-              style={[
-                styles.colorChoice,
-                color === backgroundColors.almostBlack && styles.selectedCircle,
-                { backgroundColor: backgroundColors.almostBlack },
-              ]}
-              onPress={() => setColor(backgroundColors.almostBlack)}
-            ></TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.colorChoice,
-                color === backgroundColors.darkGray && styles.selectedCircle,
-                { backgroundColor: backgroundColors.darkGray },
-              ]}
-              onPress={() => setColor(backgroundColors.darkGray)}
-            ></TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.colorChoice,
-                color === backgroundColors.blueGray && styles.selectedCircle,
-                { backgroundColor: backgroundColors.blueGray },
-              ]}
-              onPress={() => setColor(backgroundColors.blueGray)}
-            ></TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.colorChoice,
-                color === backgroundColors.green && styles.selectedCircle,
-                { backgroundColor: backgroundColors.green },
-              ]}
-              onPress={() => setColor(backgroundColors.green)}
-            ></TouchableOpacity>
-          </View>
-          <View></View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() =>
-              navigation.navigate("Chat", {
-                name: name,
-                backgroundColor: color,
-              })
-            }
-          >
-            <Text style={styles.buttonText}>Start Chatting</Text>
-          </TouchableOpacity>
-          {/* prevents keyboard from blocking view android */}
-          {Platform.OS === "android" ? (
+              style={styles.button}
+              onPress={() =>
+                navigation.navigate("Chat", {
+                  name: name,
+                  backgroundColor: color,
+                })
+              }
+            >
+              <TouchableOpacity style={styles.button} onPress={signInUser}>
+                <Text style={styles.buttonText}>Start Chatting</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+
+            {/* {Platform.OS === "android" ? (
             <KeyboardAvoidingView behavior="height" />
-          ) : null}
-          {/* prevents keyboard from blocking view ios */}
-          {Platform.OS === "ios" ? (
+          ) : null} */}
+            {/* prevents keyboard from blocking view ios */}
+            {/* {Platform.OS === "ios" ? (
             <KeyboardAvoidingView behavior="padding" />
-          ) : null}
-        </View>
-      </ImageBackground>
-    </View>
+          ) : null} */}
+          </View>
+        </ImageBackground>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -172,8 +203,9 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "88%",
-    marginTop: 20,
-    padding: 15,
+    marginTop: 0,
+    marginBottom: 0,
+    padding: 8,
     //aligns button itself
     alignSelf: "center",
     //aligns text inside button
