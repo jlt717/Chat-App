@@ -12,7 +12,6 @@ import {
   Alert,
 } from "react-native";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import firebase from "firebase/app";
 import "firebase/auth";
 
 const backgroundColors = {
@@ -67,7 +66,7 @@ const Start = ({ navigation }) => {
               style={styles.textInput}
               value={name}
               onChangeText={setName}
-              placeholder="     Type your username here"
+              placeholder="     Enter username"
             />
             <Text
               style={{
@@ -132,14 +131,6 @@ const Start = ({ navigation }) => {
                 <Text style={styles.buttonText}>Start Chatting</Text>
               </TouchableOpacity>
             </TouchableOpacity>
-
-            {/* {Platform.OS === "android" ? (
-            <KeyboardAvoidingView behavior="height" />
-          ) : null} */}
-            {/* prevents keyboard from blocking view ios */}
-            {/* {Platform.OS === "ios" ? (
-            <KeyboardAvoidingView behavior="padding" />
-          ) : null} */}
           </View>
         </ImageBackground>
       </View>

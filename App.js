@@ -50,6 +50,7 @@ const App = () => {
         <Stack.Screen name="Start" component={Start}>
           {/* {(props) => <Start db={db} {...props} />} */}
         </Stack.Screen>
+{/* pass the db prop to Chat screen */}
         <Stack.Screen name="Chat">
           {(props) => <Chat db={db} {...props} />}
         </Stack.Screen>

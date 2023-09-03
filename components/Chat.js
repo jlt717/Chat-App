@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Platform,
-  KeyboardAvoidingView,
-  Alert,
-} from "react-native";
+import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
 import {
   collection,
   addDoc,
@@ -14,11 +8,11 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
-
+//extract db props from components props
 const Chat = ({ route, navigation, db }) => {
   const { name, backgroundColor, userID } = route.params;
   const [messages, setMessages] = useState([]);
-
+  //use onSnapshot listener on query for messages collection and orderBy to sort results
   useEffect(() => {
     navigation.setOptions({ title: name });
     const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
@@ -61,6 +55,7 @@ const Chat = ({ route, navigation, db }) => {
   //   ]);
   // }, []);
 
+  // save sent messages on Firestore db
   const onSend = (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0]);
   };
