@@ -1,4 +1,7 @@
 import React, { useEffect } from "react";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 // import the screens we want to navigate
@@ -21,6 +24,7 @@ const App = () => {
     messagingSenderId: "864302327200",
     appId: "1:864302327200:web:84956f1e99799f14a0f0c5",
   };
+  firebase.initializeApp(firebaseConfig);
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -43,8 +47,8 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Start">
-        <Stack.Screen name="Start">
-          {(props) => <Start db={db} {...props} />}
+        <Stack.Screen name="Start" component={Start}>
+          {/* {(props) => <Start db={db} {...props} />} */}
         </Stack.Screen>
         <Stack.Screen name="Chat">
           {(props) => <Chat db={db} {...props} />}
