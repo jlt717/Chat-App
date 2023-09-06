@@ -7,31 +7,57 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 //extract db props from components props
-const Chat = ({ route, navigation, db }) => {
+const Chat = ({ route, navigation, db, isConnected }) => {
   const { name, backgroundColor, userID } = route.params;
   const [messages, setMessages] = useState([]);
-  //use onSnapshot listener on query for messages collection and orderBy to sort results
+  let unsubMessages;
+
   useEffect(() => {
     navigation.setOptions({ title: name });
-    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
-    const unsubMessages = onSnapshot(q, (docs) => {
-      let newMessages = [];
-      docs.forEach((doc) => {
-        newMessages.push({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: new Date(doc.data().createdAt.toMillis()),
+    if (isConnected === true) {
+      // unregister current onSnapshot() listener to avoid registering multiple listeners when
+      // useEffect code is re-executed.
+      if (unsubMessages) unsubMessages();
+      unsubMessages = null;
+      //use onSnapshot listener on query for messages collection and orderBy to sort results
+      const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+      unsubMessages = onSnapshot(q, (docs) => {
+        let newMessages = [];
+        docs.forEach((doc) => {
+          newMessages.push({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: new Date(doc.data().createdAt.toMillis()),
+          });
         });
+        cacheMessages(newMessages);
+        setMessages(newMessages);
       });
-      setMessages(newMessages);
-    });
+      //get cached messages if not connected
+    } else loadCachedMessages();
+
     // Clean up code
     return () => {
       if (unsubMessages) unsubMessages();
     };
-  }, []);
+  }, [isConnected]);
+
+  //get messages
+  const loadCachedMessages = async () => {
+    const cachedMessages = (await AsyncStorage.getItem("messages")) || [];
+    setMessages(JSON.parse(cachedMessages));
+  };
+  //cache messages
+  const cacheMessages = async (messagesToCache) => {
+    try {
+      await AsyncStorage.setItem("messages", JSON.stringify(messagesToCache));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   // useEffect(() => {
   //   navigation.setOptions({ title: name, backgroundColor: backgroundColor });
@@ -59,12 +85,12 @@ const Chat = ({ route, navigation, db }) => {
   const onSend = (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0]);
   };
-  // const onSend = (newMessages) => {
-  //   setMessages((previousMessages) =>
-  //     GiftedChat.append(previousMessages, newMessages)
-  //   );
-  // };
 
+  const renderInputToolbar = (props) => {
+    // renderInputToolbar function
+    if (isConnected) return <InputToolbar {...props} />;
+    else return null;
+  };
   const renderBubble = (props) => {
     return (
       //color of text bubbles in chat
@@ -91,14 +117,17 @@ const Chat = ({ route, navigation, db }) => {
           _id: userID,
           name,
         }}
+        renderInputToolbar={renderInputToolbar}
       />
-      {/* prevents keyboard from blocking view android */}
-      {Platform.OS === "android" ? (
-        <KeyboardAvoidingView behavior="height" />
-      ) : null}
-      {/* prevents keyboard from blocking view ios */}
-      {Platform.OS === "ios" ? (
-        <KeyboardAvoidingView behavior="padding" />
+      {isConnected === true ? (
+        <>
+          {/* prevents keyboard from blocking view android */}
+          {Platform.OS === "android" && (
+            <KeyboardAvoidingView behavior="height" />
+          )}
+          {/* prevents keyboard from blocking view ios */}
+          {Platform.OS === "ios" && <KeyboardAvoidingView behavior="padding" />}
+        </>
       ) : null}
     </View>
   );
