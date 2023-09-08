@@ -8,6 +8,7 @@ import {
   disableNetwork,
   enableNetwork,
 } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // import the screens we want to navigate
 import Start from "./components/Start";
 import Chat from "./components/Chat";
@@ -35,6 +36,7 @@ const App = () => {
   firebase.initializeApp(firebaseConfig);
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   const [fontsLoaded] = useFonts({
     "Poppins-Regular": require("./assets/Poppins-Regular.ttf"),
@@ -71,6 +73,7 @@ const App = () => {
             <Chat
               isConnected={connectionStatus.isConnected}
               db={db}
+              storage={storage}
               {...props}
             />
           )}

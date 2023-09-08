@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Platform,
+  KeyboardAvoidingView,
+  Button,
+  Image,
+} from "react-native";
 import {
   collection,
   addDoc,
@@ -9,10 +16,19 @@ import {
 } from "firebase/firestore";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
+import MapView from "react-native-maps";
+import CustomActions from "./CustomActions";
+
 //extract db props from components props
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
   const { name, backgroundColor, userID } = route.params;
   const [messages, setMessages] = useState([]);
+  const [image, setImage] = useState(null);
+  const [location, setLocation] = useState(null);
+
   let unsubMessages;
 
   useEffect(() => {
@@ -58,7 +74,46 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       console.log(error.message);
     }
   };
+  // const pickImage = async () => {
+  //   let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
+  //   if (permissions?.granted) {
+  //     let result = await ImagePicker.launchImageLibraryAsync();
+
+  //     if (!result.canceled) setImage(result.assets[0]);
+  //     else setImage(null);
+  //   }
+  // };
+  // const takePhoto = async () => {
+  //   let permissions = await ImagePicker.requestCameraPermissionsAsync();
+
+  //   if (permissions?.granted) {
+  //     let result = await ImagePicker.launchCameraAsync();
+
+  //     if (!result.canceled) {
+  //       let mediaLibraryPermissions =
+  //         await MediaLibrary.requestPermissionsAsync();
+
+  //       if (mediaLibraryPermissions?.granted)
+  //         await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
+
+  //       setImage(result.assets[0]);
+  //     } else setImage(null);
+  //   }
+  // };
+  // const getLocation = async () => {
+  //   let permissions = await Location.requestForegroundPermissionsAsync();
+
+  //   if (permissions?.granted) {
+  //     const location = await Location.getCurrentPositionAsync({});
+  //     setLocation(location);
+  //   } else {
+  //     Alert.alert("Permissions to read location aren't granted");
+  //   }
+  // };
+  const renderCustomActions = (props) => {
+    return <CustomActions storage={storage} {...props} />;
+  };
   // useEffect(() => {
   //   navigation.setOptions({ title: name, backgroundColor: backgroundColor });
   //   setMessages([
@@ -107,6 +162,23 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       />
     );
   };
+  const renderCustomView = (props) => {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
+  };
   return (
     <View style={[styles.container, { backgroundColor: backgroundColor }]}>
       <GiftedChat
@@ -118,7 +190,10 @@ const Chat = ({ route, navigation, db, isConnected }) => {
           name,
         }}
         renderInputToolbar={renderInputToolbar}
+        renderActions={renderCustomActions}
+        renderCustomView={renderCustomView}
       />
+
       {isConnected === true ? (
         <>
           {/* prevents keyboard from blocking view android */}
@@ -129,6 +204,27 @@ const Chat = ({ route, navigation, db, isConnected }) => {
           {Platform.OS === "ios" && <KeyboardAvoidingView behavior="padding" />}
         </>
       ) : null}
+      {/* <Button title="Get my location" onPress={getLocation} />
+      <Button title="Pick an image from the library" onPress={pickImage} />
+      <Button title="Take a photo" onPress={takePhoto} /> */}
+
+      {location && (
+        <MapView
+          style={{ width: 300, height: 200 }}
+          region={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      )}
+      {image && (
+        <Image
+          source={{ uri: image.uri }}
+          style={{ width: 200, height: 200 }}
+        />
+      )}
     </View>
   );
 };
