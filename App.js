@@ -64,7 +64,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Start">
-        <Stack.Screen name="Start" component={Start}>
+        <Stack.Screen name=" " component={Start}>
           {/* {(props) => <Start db={db} {...props} />} */}
         </Stack.Screen>
         {/* pass the db prop to Chat screen */}

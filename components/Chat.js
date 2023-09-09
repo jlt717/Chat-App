@@ -4,7 +4,6 @@ import {
   View,
   Platform,
   KeyboardAvoidingView,
-  Button,
   Image,
 } from "react-native";
 import {
@@ -16,9 +15,6 @@ import {
 } from "firebase/firestore";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as ImagePicker from "expo-image-picker";
-import * as MediaLibrary from "expo-media-library";
-import * as Location from "expo-location";
 import MapView from "react-native-maps";
 import CustomActions from "./CustomActions";
 
@@ -26,8 +22,6 @@ import CustomActions from "./CustomActions";
 const Chat = ({ route, navigation, db, isConnected, storage }) => {
   const { name, backgroundColor, userID } = route.params;
   const [messages, setMessages] = useState([]);
-  const [image, setImage] = useState(null);
-  const [location, setLocation] = useState(null);
 
   let unsubMessages;
 
@@ -74,68 +68,9 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
       console.log(error.message);
     }
   };
-  // const pickImage = async () => {
-  //   let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-  //   if (permissions?.granted) {
-  //     let result = await ImagePicker.launchImageLibraryAsync();
-
-  //     if (!result.canceled) setImage(result.assets[0]);
-  //     else setImage(null);
-  //   }
-  // };
-  // const takePhoto = async () => {
-  //   let permissions = await ImagePicker.requestCameraPermissionsAsync();
-
-  //   if (permissions?.granted) {
-  //     let result = await ImagePicker.launchCameraAsync();
-
-  //     if (!result.canceled) {
-  //       let mediaLibraryPermissions =
-  //         await MediaLibrary.requestPermissionsAsync();
-
-  //       if (mediaLibraryPermissions?.granted)
-  //         await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
-
-  //       setImage(result.assets[0]);
-  //     } else setImage(null);
-  //   }
-  // };
-  // const getLocation = async () => {
-  //   let permissions = await Location.requestForegroundPermissionsAsync();
-
-  //   if (permissions?.granted) {
-  //     const location = await Location.getCurrentPositionAsync({});
-  //     setLocation(location);
-  //   } else {
-  //     Alert.alert("Permissions to read location aren't granted");
-  //   }
-  // };
   const renderCustomActions = (props) => {
     return <CustomActions storage={storage} {...props} />;
   };
-  // useEffect(() => {
-  //   navigation.setOptions({ title: name, backgroundColor: backgroundColor });
-  //   setMessages([
-  //     {
-  //       _id: 1,
-  //       text: "Have a wonderful day!",
-  //       createdAt: new Date(),
-  //       user: {
-  //         _id: 2,
-  //         name: "React Native",
-  //         avatar: "https://placeimg.com/140/140/any",
-  //       },
-  //     },
-  //     {
-  //       _id: 2,
-  //       text: "You have entered the chat.",
-  //       createdAt: new Date(),
-  //       system: true, //creates a system message
-  //     },
-  //   ]);
-  // }, []);
-
   // save sent messages on Firestore db
   const onSend = (newMessages) => {
     addDoc(collection(db, "messages"), newMessages[0]);
@@ -204,27 +139,6 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
           {Platform.OS === "ios" && <KeyboardAvoidingView behavior="padding" />}
         </>
       ) : null}
-      {/* <Button title="Get my location" onPress={getLocation} />
-      <Button title="Pick an image from the library" onPress={pickImage} />
-      <Button title="Take a photo" onPress={takePhoto} /> */}
-
-      {location && (
-        <MapView
-          style={{ width: 300, height: 200 }}
-          region={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        />
-      )}
-      {image && (
-        <Image
-          source={{ uri: image.uri }}
-          style={{ width: 200, height: 200 }}
-        />
-      )}
     </View>
   );
 };
