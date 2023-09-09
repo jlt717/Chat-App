@@ -4,7 +4,6 @@ import {
   View,
   Platform,
   KeyboardAvoidingView,
-  Image,
 } from "react-native";
 import {
   collection,
