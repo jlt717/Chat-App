@@ -8,6 +8,8 @@
 
 <br>
 
+<img src= "https://github.com/jlt717/Chat-App/assets/128320420/59299120-2e1d-4240-a178-9bf4f577ff29" width="300">
+<img src= "https://github.com/jlt717/Chat-App/assets/128320420/89440eba-2564-43fd-9d2f-8037be7e59fe" width="300">
 
 
 
