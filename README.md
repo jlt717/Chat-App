@@ -21,7 +21,7 @@
 
 <br>
 
-## **Technologies:**
+## Technologies
 ### ● React Native
 ### ● Expo
 ### ● Android Studio
@@ -29,7 +29,7 @@
 
 <br>
 
-## **Setting up Development Environment:**
+## Setting up Development Environment
 ### ● Download node 16.19.0 via `nvm install 16.19.0` (Expo only supports up to node 16, so downgrade if necessary) and then run `nvm use 16.19.0`
 ### ● Download Expo via `npm install -g expo-cli`
 ### ● Download Expo Go app on mobile devide
@@ -38,13 +38,13 @@
 
 <br>
 
-## **Database Configuration:**
+## Database Configuration
 ### ● Set up Google Firebase account and create database in Firestore
 ### ● Copy/paste firebaseConfig code into App.js file
 
 <br>
 
-## **Dependencies:**
+## Dependencies
 ```
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
